@@ -78,13 +78,15 @@ class BaseTool(BaseModel, ABC):
     def to_structured_tool(self) -> CrewStructuredTool:
         """Convert this tool to a CrewStructuredTool instance."""
         self._set_args_schema()
-        return CrewStructuredTool(
+        structured_tool = CrewStructuredTool(
             name=self.name,
             description=self.description,
             args_schema=self.args_schema,
             func=self._run,
             result_as_answer=self.result_as_answer,
         )
+        structured_tool.cache_function = self.cache_function
+        return structured_tool
 
     @classmethod
     def from_langchain(cls, tool: Any) -> "BaseTool":
